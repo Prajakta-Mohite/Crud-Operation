@@ -1,7 +1,7 @@
 import {} from 'bootstrap-vue';
 import Vue from 'vue';
 import Router from 'vue-router';
-import AddEmployee from './components/AddEmployee';
+import HelloWorld from './components/HelloWorld';
 
 
 Vue.use(Router);
@@ -9,8 +9,8 @@ Vue.use(Router);
 export const router = new Router({
     mode: 'history',
     routes: [{
-            path: '/addemployee',
-            component: AddEmployee
+            path: '/',
+            component: HelloWorld
         },
 
     ]
