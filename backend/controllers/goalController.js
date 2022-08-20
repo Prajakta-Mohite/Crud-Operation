@@ -75,18 +75,21 @@ const updateGoals = async (req, res) => {
 
     })
 
-    const upload = multer({
+    const updateEmp = multer({
         storage: Storage
     }).single('testImage')
 
-    upload(req, res, (err) => {
+    updateEmp(req, res, (err) => {
 
         if (err) {
             console.log("error")
             console.log(err)
         } else {
-
-            const updatedEmployee = goalModel.findOneAndUpdate(req.params.id, {
+            console.log("update reqest")
+            // console.log(req)
+            console.log(req.params.id)
+            console.log(req.body)
+            const updatedEmployee = Employee.findByIdAndUpdate(req.params.id, {
                     name: req.body.name,
                     mobile: req.body.mobile,
                     email: req.body.email,
@@ -94,7 +97,13 @@ const updateGoals = async (req, res) => {
                 })
 
 
+
                 .then(() => res.send('successfully uploaded')).catch(err => console.log(err))
+
+            console.log("after query")
+            console.log(req.params.id)
+            console.log(req.body)
+            console.log(updatedEmployee)
 
         }
     })
