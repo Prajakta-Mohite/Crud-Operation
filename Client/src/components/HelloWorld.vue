@@ -40,19 +40,19 @@
 <div class="card container card-container mb-3 col-6" v-show="editcondition" >
      <div class="card-body col-8 m-auto ">
     <h3 class="mb-2">Update Employee</h3>
-<form @submit.prevent="updateEmployee(employee._id)" autocomplete="off">
+<form @submit.prevent="updateEmployee(employee._id,employee.name,employee.email,employee.mobile)" autocomplete="off">
       <div class="form-group mb-2">
-        <input type="text" v-model="employee.name" required class="form-control" id="exampleInputName"  placeholder="Enter Name">
+        <input type="text" v-model="employee.name" required class="form-control" id="exampleInputName1"  placeholder="Enter Name">
       </div>
       <div class="form-group mb-2">
-        <input type="email" v-model="employee.email" required class="form-control" id="exampleInputEmail" placeholder="Enter Email ID">
+        <input type="email" v-model="employee.email" required class="form-control" id="exampleInputEmail1" placeholder="Enter Email ID">
       </div>
       <div class="form-group mb-2">
-        <input type="number" v-model="employee.mobile" required min="10" class="form-control" id="exampleInputMobile" placeholder="Password" >
+        <input type="number" v-model="employee.mobile" required min="10" class="form-control" id="exampleInputMobile1" placeholder="Password" >
       </div>
       <div class="form-group mb-2">
         <img class="rounded sx-auto d-block" v-bind:src="`${employee.photo}`"/>
-        <input type="file" id="exampleInputPhoto" >
+        <input type="file" id="exampleInputPhoto1" @change="onFileChanged" >
       </div>
       
       <button type="submit" class="btn btn-primary">Update</button>
@@ -82,7 +82,7 @@
       <td>{{employeelist.mobile}}</td>
       <!-- <td><img src="employeelist.photo" /></td> -->
       <td><img class="rounded mx-auto d-block" v-bind:src="`${employeelist.photo}`"/></td>
-      <td><button class="btn btn-danger btn-sm" @click="editEmployee(employeelist._id)">Edit</button></td>
+      <td><button class="btn btn-danger btn-sm" @click="editEmployee(employeelist._id,employeelist.name,employeelist.email,employeelist.mobile)">Edit</button></td>
       <td><button class="btn btn-danger btn-sm" @click="deleteEmployee(employeelist._id)">Delete</button></td>
     </tr>
    
@@ -111,12 +111,19 @@ export default {
         photo:'',
         
       },
-      employee:[],
+      employee:{
+        name:'',
+        email:'',
+        mobile:'',
+        photo:'',
+        
+      },
       editcondition:false,
       addcondition:false,
       addbtn:true,
       index:0,
       selectedFile:null,
+      emp_id:"",
      
       
     };
@@ -210,13 +217,24 @@ methods:{
             });    
     },
 
-    editEmployee(Empid)
+    editEmployee(emp_id,name,email,mobile)
     {
+      console.log(emp_id,name,email,mobile)
+      console.log(emp_id)
+      console.log(name)
+      console.log(email)
+      console.log(mobile)
+      console.log(this.selectedFile)
+
+      this.employee.name = name,
+      this.employee.email = email,
+      this.employee.mobile = mobile,
+      // this.selectedFile = this.selectedFile
         this.editcondition = true;
          this.addcondition = false
          this.addbtn = false
         return axios
-      .get(`http://localhost:7000/api/goals/ById/${Empid}`)
+      .get(`http://localhost:7000/api/goals/ById/${emp_id}`)
       .then(response => {
         
         this.employee = response.data;
@@ -225,8 +243,15 @@ methods:{
     },
 
 
-    updateEmployee(Empid)
+    updateEmployee(emp_id)
   {   
+    console.log("After update")
+    console.log(emp_id)
+    console.log(this.employee.name)
+    console.log(this.employee.email)
+    console.log(this.employee.mobile)
+    
+
         let formData = new FormData();
         formData.append('testImage', this.selectedFile)
       formData.append('mobile', this.employee.mobile)
@@ -234,14 +259,15 @@ methods:{
       formData.append('email', this.employee.email)  
       
     return axios
-      .put(`http://localhost:7000/api/goals/${Empid}`,formData)
+      .put(`http://localhost:7000/api/goals/${emp_id}`,formData)
       .then(response => {        
-        this.employeelists = response.data;
+         this.employeelists = response.data;
         if(response.status == 200)
         {
             this.editcondition = false,
             this.addbtn = true
             this.getEmployeeList()
+
             this.$swal(
                   'Updated Successfully!',
                   'Employee Updated Successfully.',
